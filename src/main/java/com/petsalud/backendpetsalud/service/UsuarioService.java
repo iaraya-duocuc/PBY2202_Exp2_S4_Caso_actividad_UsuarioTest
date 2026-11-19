@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface UsuarioService {
     Usuario registrarUsuario(Usuario usuario);
+    Usuario obtenerUsuarioHabilitadoParaVenta(Long id);
     Optional<Usuario> obtenerUsuarioPorId(Long id);
     Optional<Usuario> obtenerUsuarioPorEmail(String email);
     Usuario actualizarUsuario(Long id, Usuario usuario);

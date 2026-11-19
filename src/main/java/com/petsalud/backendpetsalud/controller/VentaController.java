@@ -3,8 +3,10 @@ package com.petsalud.backendpetsalud.controller;
 import com.petsalud.backendpetsalud.entity.Venta;
 import com.petsalud.backendpetsalud.service.VentaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
@@ -18,8 +20,11 @@ public class VentaController {
     public ResponseEntity<Venta> realizarVenta(
             @RequestParam Long usuarioId,
             @RequestBody List<Long> productosIds) {
-        Venta nuevaVenta = ventaService.realizarVenta(usuarioId, productosIds);
-        return ResponseEntity.ok(nuevaVenta);
+        try {
+            return ResponseEntity.ok(ventaService.realizarVenta(usuarioId, productosIds));
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        }
     }
 
     @GetMapping("/{id}")

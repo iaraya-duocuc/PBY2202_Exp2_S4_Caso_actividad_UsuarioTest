@@ -1,10 +1,11 @@
 package com.petsalud.backendpetsalud.service;
 
+import com.petsalud.backendpetsalud.entity.Rol;
 import com.petsalud.backendpetsalud.entity.Usuario;
 import com.petsalud.backendpetsalud.repository.UsuarioRepository;
-import com.petsalud.backendpetsalud.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,29 @@ public class UsuarioServiceImpl implements UsuarioService {
             throw new IllegalArgumentException("El email ya está registrado");
         }
         return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    public Usuario obtenerUsuarioHabilitadoParaVenta(Long id) {
+        Usuario usuario = obtenerUsuarioPorId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!StringUtils.hasText(usuario.getNombre())) {
+            throw new IllegalArgumentException("El nombre del usuario es obligatorio");
+        }
+        if (!StringUtils.hasText(usuario.getApellido())) {
+            throw new IllegalArgumentException("El apellido del usuario es obligatorio");
+        }
+        if (!StringUtils.hasText(usuario.getEmail())) {
+            throw new IllegalArgumentException("El email del usuario es obligatorio");
+        }
+        if (!StringUtils.hasText(usuario.getDireccion())) {
+            throw new IllegalArgumentException("La dirección del usuario es obligatoria");
+        }
+        if (usuario.getRol() != Rol.ADMIN && usuario.getRol() != Rol.CLIENTE) {
+            throw new IllegalArgumentException("El rol del usuario no está autorizado para realizar ventas");
+        }
+        return usuario;
     }
 
     @Override

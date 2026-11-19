@@ -3,6 +3,7 @@ package com.petsalud.backendpetsalud.security;
 import com.petsalud.backendpetsalud.security.UsuarioDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/usuarios/registro", "/api/login").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/veterinario/**").hasAnyAuthority("VETERINARIO", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/ventas", "/api/ventas/")
+                                .hasAnyAuthority("ADMIN", "CLIENTE")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(usuarioDetailsService)
